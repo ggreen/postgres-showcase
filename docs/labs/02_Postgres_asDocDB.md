@@ -36,7 +36,7 @@ podman run --rm -it \
 podman exec -it postgres-docdb psql -U postgres -d postgres
 ```
 
-🏗️ Step 3: Create a JSONB Table
+## 🏗️ Step 3: Create a JSONB Table
 
 ```sql
 CREATE TABLE documents (
@@ -46,7 +46,7 @@ data JSONB NOT NULL
 ```
 
 
-✍️ Step 4: Insert JSON Documents
+## ✍️ Step 4: Insert JSON Documents
 ```sql
 INSERT INTO documents (data) VALUES
 ('{"name": "Alice", "age": 30, "skills": ["SQL", "Python"]}'),
@@ -54,7 +54,7 @@ INSERT INTO documents (data) VALUES
 ```
 
 
-🔍 Step 5: Query JSONB Data
+## 🔍 Step 5: Query JSONB Data
 Get all documents
 
 ```sql
@@ -75,7 +75,7 @@ SELECT * FROM documents
 WHERE data->'skills' ? 'Docker';
 ```
 
-⚡ Step 6: Index JSONB Fields
+## ⚡ Step 6: Index JSONB Fields
 
 Improve performance with a GIN index:
 
@@ -83,7 +83,7 @@ Improve performance with a GIN index:
 CREATE INDEX idx_gin_data ON documents USING GIN (data);
 ```
 
-🔄 Step 7: Update JSONB Data
+## 🔄 Step 7: Update JSONB Data
 
 ```sql
 UPDATE documents
@@ -99,7 +99,7 @@ WHERE data->>'name' = 'Alice';
 ```
 
 
-❌ Step 8: Delete Documents
+## ❌ Step 8: Delete Documents
 
 ```sql
 DELETE FROM documents
@@ -127,7 +127,7 @@ SELECT * FROM documents
 WHERE data->'meta'->>'author' = 'John';
 ```
 
-🧹 Cleanup
+#  🧹 Cleanup
 
 
 ```bash
