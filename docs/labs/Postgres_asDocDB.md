@@ -114,7 +114,7 @@ INSERT INTO documents (data) VALUES
 ('{
 "title": "Postgres as NoSQL",
 "meta": {
-"author": "Greg",
+"author": "John",
 "tags": ["postgresql", "jsonb", "nosql"]
 }
 }');
@@ -124,7 +124,7 @@ Query nested key:
 
 ```sql
 SELECT * FROM documents
-WHERE data->'meta'->>'author' = 'Greg';
+WHERE data->'meta'->>'author' = 'John';
 ```
 
 🧹 Cleanup
