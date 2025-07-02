@@ -23,7 +23,7 @@ By the end of this workshop, you will be able to:
 
 ```bash
 podman run --rm -it \
-  --name postgres-docdb \
+  --name postgres \
   -e POSTGRESQL_USERNAME=postgres \
   -e POSTGRESQL_PASSWORD=postgres \
   -e POSTGRESQL_DATABASE=postgres \
@@ -34,13 +34,13 @@ podman run --rm -it \
 ✅ This starts PostgreSQL with:
 
 
-🔗 Step 2: Connect to PostgreSQL
+## 🔗 Step 2: Connect to PostgreSQL
 
 ```bash
-podman exec -it postgres-docdb psql -U postgres -d postgres
+podman exec -it postgres psql -U postgres -d postgres
 ```
 
-🧠 Step 3: Understanding Schemas
+## 🧠 Step 3: Understanding Schema
 What is a Schema?
 A schema is like a namespace inside a database. It helps group related tables, views, and functions together.
 
@@ -52,7 +52,7 @@ List Current Schemas
 
 You should see public — the default schema.
 
-🏗️ Step 4: Create a Schema
+## 🏗️ Step 4: Create a Schema
 
 
 ```sql
@@ -60,7 +60,7 @@ CREATE SCHEMA company;
 ```
 
 
-📋 Step 5: Create a Table
+## 📋 Step 5: Create a Table
 
 Inside the company Schema
 
@@ -92,7 +92,7 @@ INSERT INTO company.employees (name, role) VALUES
 ('Charlie', 'Analyst');
 ```
 
-🔍 Step 6: Query the Table
+## 🔍 Step 6: Query the Table
 
 ```sql
 SELECT * FROM company.employees;
@@ -104,7 +104,7 @@ Or with explicit schema path:
 SELECT name, role FROM company.employees WHERE role = 'Engineer';
 ```
 
-📑 Step 7: List Tables and Describe Structure
+## 📑 Step 7: List Tables and Describe Structure
 
 ```sql
 \dt company.*
@@ -115,7 +115,7 @@ SELECT name, role FROM company.employees WHERE role = 'Engineer';
 ```
 
 
-🧹 Step 8: Clean Up
+## 🧹 Step 8: Clean Up
 
 
 Exit psql:
@@ -124,11 +124,11 @@ Exit psql:
 \q
 ```
 
-Stop and remove the container:
+## Stop and remove the container:
 
 
 ```shell
-podman rm pg-sql-workshop
+podman rm -f postgres
 ```
 
 
