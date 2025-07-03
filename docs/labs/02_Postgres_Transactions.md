@@ -116,6 +116,9 @@ hired_on DATE DEFAULT CURRENT_DATE
 ```shell
 INSERT INTO company.employees (name, role) VALUES
 ('Alice', 'Engineer');
+
+INSERT INTO company.employees (name, role) VALUES
+('Mary', 'Developer');
 ```
 
 Start Another Terminal
@@ -123,16 +126,61 @@ Start Another Terminal
 podman exec -it postgres psql -U postgres -d postgres
 ```
 
+ Test locks with two terminal sessions
 ```sql
--- Test locks with two terminal sessions
 BEGIN;
 UPDATE company.employees SET role = 'retired' WHERE name = 'Alice';
 ```
 
 In another session, try:
 
+```properties
+podman run -p 7280:7280 cloudnativedata/jdbc-sql-console-app:0.0.2-SNAPSHOT --server.port=7280 --spring.datasource.url=jdbc:postgresql://host.docker.internal:5432/postgres --spring.datasource.username=postgres --spring.datasource.password=postgres
+```
+
+or java
+```shell
+java -jar applications/jdbc-sql-console-app/target/jdbc-sql-console-app-0.0.3-SNAPSHOT.jar --spring.datasource.url="jdbc:postgresql://localhost:5432/postgres" --spring.datasource.username=postgres --spring.datasource.password=postgres
+```
+
+Open URL
+
+```shell
+open http://localhost:7280
+```
+
+
+The following will result in a row level block
+
 ```sql
 UPDATE company.employees SET role = 'promoted' WHERE name = 'Alice';
+```
+
+
+
+Commit in first terminal
+
+```sql
+COMMIT;
+```
+
+View update (role will equal promoted)
+
+```sql
+select * from company.employees;
+```
+
+Start in psql
+
+```sql
+BEGIN;
+UPDATE company.employees SET role = 'Architect' WHERE name = 'Mary';
+```
+
+In another session (will not be locked)
+
+```sql
+UPDATE company.employees SET role = 'Manager' WHERE name = 'Alice';
 ```
 
 Commit in first terminal
@@ -141,10 +189,10 @@ Commit in first terminal
 COMMIT;
 ```
 
-View update
 ```sql
 select * from company.employees;
 ```
+
 
 8. Exercises
 
@@ -220,7 +268,7 @@ COMMIT;
 ```
 
 Verify the balances did not change
-```shell
+```sql
 SELECT * FROM company.accounts;
 ```
 
@@ -229,7 +277,7 @@ SELECT * FROM company.accounts;
 
 In two terminals:
 
-Terminal A
+In psql
 
 ```sql
 BEGIN;
@@ -237,7 +285,7 @@ SELECT * FROM company.accounts WHERE name = 'Alice';
 -- Don’t commit yet
 ```
 
-Terminal B
+ANother Terminal or JDBC Console
 
 ```sql
 BEGIN;
@@ -250,6 +298,13 @@ Verify you can read commit from Terminal A
 ```shell
 SELECT * FROM company.accounts;
 ```
+
+Commit in first terminal
+
+```sql
+COMMIT;
+```
+
 
 -----------------
 Observe behavior depending on isolation level.
