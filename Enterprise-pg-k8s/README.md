@@ -1,6 +1,12 @@
 ## Install Enterprise PostgreSQL on Kubernetes
 
-### Operator
+### Prerequisites
+
+1. Kubernetes cluster with at least v1.30+
+2. Helm v3.x
+3. psql client installed
+4. pg_dump client installed
+5. PG_Admin installed: [Dowload your pgAdmin version](https://www.pgadmin.org/download/) (optional)
 
 #### Install cert-manager
 
