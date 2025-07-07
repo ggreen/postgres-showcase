@@ -49,14 +49,6 @@ kubectl create secret docker-registry regsecret \
 helm install my-postgres-operator /tmp/vmware-sql-postgres-operator/  --wait
 ```
 
-#### Create a k8s secrets to be able to pull the images for postgres db
-
-```shell
-kubectl create secret docker-registry regsecret \
---docker-server=https://registry.tanzu.vmware.com/ \
---docker-username=$HARBOR_USER \
---docker-password=$HARBOR_PASSWORD
-```
 
 #### Verfiy the Operator Installation 
 
@@ -74,10 +66,10 @@ kubectl apply -f pg-ha.yaml
 
 #### Connect to DB
 
-```
+<!-- ```
 echo "Username: " $(kubectl get secret postgres-ha-sample-db-secret -n default -o jsonpath='{.data.username}' | base64 --decode)
 echo "Password: " $(kubectl get secret postgres-ha-sample-db-secret -n default -o jsonpath='{.data.password}' | base64 --decode)
-```
+``` -->
 
 
 ```
