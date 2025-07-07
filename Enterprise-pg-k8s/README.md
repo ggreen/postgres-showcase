@@ -4,6 +4,7 @@
 
 1. Kubernetes cluster with at least v1.30+
 2. Helm v3.x
+3. postgres v14.x : The demo cluster uses version 14.x and it is recommended to use the same version for client tools like pg_dump
 3. psql client installed
 4. pg_dump client installed
 5. PG_Admin installed: [Dowload your pgAdmin version](https://www.pgadmin.org/download/) (optional)
