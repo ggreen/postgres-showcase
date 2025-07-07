@@ -95,6 +95,8 @@ PGPASSWORD=$PG_PASSWORD psql -h localhost -p 5444 -U "$PG_USERNAME" -d postgres-
 
 ### Load Schema
 
+You can leverage the psql-schema.sql file to load sample schema to your database
+
 ```
 PGPASSWORD=$PG_PASSWORD psql -h localhost -p 5444 -U "$PG_USERNAME" -d postgres-db -f psql-schema.sql
 ```
@@ -102,12 +104,19 @@ PGPASSWORD=$PG_PASSWORD psql -h localhost -p 5444 -U "$PG_USERNAME" -d postgres-
 
 ### Load Data
 
+You can leverage psql-data-insert.sql file to load sample data into your database.
+
 ```
 PGPASSWORD=$PG_PASSWORD psql -h localhost -p 5444 -U "$PG_USERNAME" -d postgres-db -f psql-data-insert.sql
 ```
 
 
 ### Backup  DB
+
+NOTE: Ensure that the client tools are version matching to the server version. i.e 14.x for this example. If you higher/lower version of client tools. Please adjust accordingly. You can update the pgversion in pg-ha.yaml to match the client tools version or vice versa.
+
+
+To backup the database, you can use command from you client. You can review the backup.sql file to see what DDL information it has.
 
 ```
 PGPASSWORD=$PG_PASSWORD pg_dump -h localhost -p 5444 -U "$PG_USERNAME" -d postgres-db > backup.sql
@@ -117,11 +126,12 @@ PGPASSWORD=$PG_PASSWORD pg_dump -h localhost -p 5444 -U "$PG_USERNAME" -d postgr
 
 ### Restore DB
 
+To restore DB we are going to create another database called "backup" on same server  and then restore the data into it.
 
 ```
 PGPASSWORD=$PG_USERNAME psql -h localhost -p 5444 -U "$PG_USERNAME" -d postgres -c "CREATE DATABASE backup OWNER "$PG_USERNAME";"
 ```
-
+Below command will allow you restore the backup.sql file to "backupdb" 
 
 ```
 PGPASSWORD=$PG_PASSWORD psql -h localhost -p 5444 -U "$PG_USERNAME" -d backup -f backup.sql
