@@ -117,7 +117,7 @@ PGPASSWORD=$PG_PASSWORD psql -h localhost -p 5444 -U "$PG_USERNAME" -d postgres-
 
 ### Backup  DB
 
-NOTE: Ensure that the client tools are version matching to the server version. i.e 14.x for this example. If you higher/lower version of client tools. Please adjust accordingly. You can update the pgversion in pg-ha.yaml to match the client tools version or vice versa.
+**NOTE:**  Ensure that the client tools are version matching to the server version. i.e 14.x for this example. If you higher/lower version of client tools. Please adjust accordingly. You can update the pgversion in pg-ha.yaml to match the client tools version or vice versa.
 
 
 To backup the database, you can use command from you client. You can review the backup.sql file to see what DDL information it has.
