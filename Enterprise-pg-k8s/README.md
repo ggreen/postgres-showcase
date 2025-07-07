@@ -4,6 +4,10 @@
 
 ##### Install cert-manager
 
+```
+cd Enterprise-pg-k8s  
+```
+
 ```shell
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cert-manager.yaml
 ```
@@ -54,31 +58,69 @@ kubectl create secret docker-registry regsecret \
 --docker-password=$HARBOR_PASSWORD
 ```
 
+##### Verfiy the Operator Installation 
 
 ```shell
-k get pods 
+kubectl get pods 
 ```
 
 
 #### PostgresDB HA
 
-```
+```shell
 kubectl apply -f pg-ha.yaml
 ```
 
 
-### Connect to DB
+##### Connect to DB
 
+```
+echo "Username: " $(kubectl get secret postgres-ha-sample-db-secret -n default -o jsonpath='{.data.username}' | base64 --decode)
+echo "Password: " $(kubectl get secret postgres-ha-sample-db-secret -n default -o jsonpath='{.data.password}' | base64 --decode)
+```
+
+
+```
+PG_USERNAME=$(kubectl get secret postgres-ha-sample-db-secret -n default -o jsonpath='{.data.username}' | base64 --decode)
+PG_PASSWORD=$(kubectl get secret postgres-ha-sample-db-secret -n default -o jsonpath='{.data.password}' | base64 --decode)
+
+echo "Retrieved Username: $PG_USERNAME"
+echo "Retrieved Password: $PG_PASSWORD"
+```
+
+```
+PGPASSWORD=$PG_PASSWORD psql -h localhost -p 5444 -U "$PG_USERNAME" -d postgres-db
+```
 
 
 
 ### Load Schema
 
+```
+PGPASSWORD=$PG_PASSWORD psql -h localhost -p 5444 -U "$PG_USERNAME" -d postgres-db -f psql-schema.sql
+```
+
 
 ### Load Data
+
+```
+PGPASSWORD=$PG_PASSWORD psql -h localhost -p 5444 -U "$PG_USERNAME" -d postgres-db -f psql-data-insert.sql
+```
 
 
 ### Backup  DB
 
+```
+PGPASSWORD=$PG_PASSWORD pg_dump -h localhost -p 5444 -U "$PG_USERNAME" -d postgres-db > backup.sql
+```
+
+```
+PGPASSWORD=$PG_USERNAME psql -h localhost -p 5444 -U "$PG_USERNAME" -d postgres -c "CREATE DATABASE backup OWNER "$PG_USERNAME";"
+```
 
 ### Restore DB
+
+
+```
+PGPASSWORD=$PG_PASSWORD psql -h localhost -p 5444 -U "$PG_USERNAME" -d backup -f backup.sql
+```
