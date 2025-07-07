@@ -157,3 +157,21 @@ Below command will allow you restore the backup.sql file to "backupdb"
 ```
 PGPASSWORD=$PG_PASSWORD psql -h localhost -p 5444 -U "$PG_USERNAME" -d backup -f backup.sql
 ```
+
+
+## Trobuleshooting
+
+### k8s
+- Describe your pods and pvc to confirm they are healthy.
+
+```
+kubectl describe pods, pvc 
+```
+
+### pgAdmin
+- Connection Refused database "postgres" does not exists.  Check the dbname in pgConfig section of postgres.yaml
+- Port issues Check if port is open on your cluster and accessible from your local machine.
+
+### Postgres
+- Username or Database does not exists. Check the username and dbname in pgConfig section
+
