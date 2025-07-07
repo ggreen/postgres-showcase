@@ -99,6 +99,7 @@ Before you can can access the db you need to port-forward the service to your lo
 kubectl  port-forward svc/postgres-ha-sample 5444:5432
 ```
 
+The below script will export the default username and password from kubernetes secret.
 
 ```
 PG_USERNAME=$(kubectl get secret postgres-ha-sample-db-secret -n default -o jsonpath='{.data.username}' | base64 --decode)
@@ -108,6 +109,8 @@ echo "Retrieved Username: $PG_USERNAME"
 echo "Retrieved Password: $PG_PASSWORD"
 ```
 
+Sample command to be able to connect to db using the above credentials via psql
+
 ```
 PGPASSWORD=$PG_PASSWORD psql -h localhost -p 5444 -U "$PG_USERNAME" -d postgres-db
 ```
@@ -116,7 +119,7 @@ PGPASSWORD=$PG_PASSWORD psql -h localhost -p 5444 -U "$PG_USERNAME" -d postgres-
 
 ### Load Schema
 
-You can leverage the psql-schema.sql file to load sample schema to your database
+You can leverage the psql-schema.sql file to load sample schema to your database. Note that we are leveraging psql client tool here.
 
 ```
 PGPASSWORD=$PG_PASSWORD psql -h localhost -p 5444 -U "$PG_USERNAME" -d postgres-db -f psql-schema.sql
@@ -137,7 +140,7 @@ PGPASSWORD=$PG_PASSWORD psql -h localhost -p 5444 -U "$PG_USERNAME" -d postgres-
 **NOTE:**  Ensure that the client tools are version matching to the server version. i.e 14.x for this example. If you higher/lower version of client tools. Please adjust accordingly. You can update the pgversion in pg-ha.yaml to match the client tools version or vice versa.
 
 
-To backup the database, you can use command from you client. You can review the backup.sql file to see what DDL information it has.
+To backup the database, you can use **pg_dump** command from you client. You can review the backup.sql file to see what DDL information it has.
 
 ```
 PGPASSWORD=$PG_PASSWORD pg_dump -h localhost -p 5444 -U "$PG_USERNAME" -d postgres-db > backup.sql
