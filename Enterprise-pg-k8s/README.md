@@ -1,5 +1,19 @@
 ## Install Enterprise PostgreSQL on Kubernetes
 
+## 🎯 Workshop Objective
+
+By the end of this workshop, you will be able to:
+
+- Run Enterprise PostgreSQL on K8s(Docker, Kind, Minikube)
+- Connect to the database using `psql`
+- Understand schemas
+- Create and query tables using SQL files
+- Load Data into the database using SQL files
+- Backup and Restore the database using SQL files.
+
+---
+
+
 ### Prerequisites
 
 1. Kubernetes cluster with at least v1.30+
