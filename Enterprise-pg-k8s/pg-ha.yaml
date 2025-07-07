@@ -10,3 +10,5 @@ spec:
 # readOnlyServiceType: ClusterIP
   highAvailability:
     enabled: true
+  imagePullSecret:
+    name: regsecret
