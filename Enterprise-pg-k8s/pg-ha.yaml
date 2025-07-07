@@ -1,0 +1,12 @@
+apiVersion: sql.tanzu.vmware.com/v1
+kind: Postgres
+metadata:
+  name: postgres-ha-sample
+  # namespace: postgres-databases
+spec:
+  storageClassName: standard
+  storageSize: 800M
+  serviceType: ClusterIP #LoadBalancer
+# readOnlyServiceType: ClusterIP
+  highAvailability:
+    enabled: true
