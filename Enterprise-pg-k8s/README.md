@@ -21,6 +21,10 @@ kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/
 
 #### Get your credentials from Broadcom Support Portal
 
+[Link to k8s Postgres on Broadcom Support Portal](https://support.broadcom.com/group/ecx/productdownloads?subfamily=VMware%20Tanzu%20for%20Postgres%20on%20Kubernetes)
+
+Click on "VMware Tanzu for Postgres on Kubernetes" and click on green token symbol to get the password. Your username is your email address.
+
 ```
 export HARBOR_USER=XXXXXXXX
 export HARBOR_PASSWORD=XXXXXXXX
