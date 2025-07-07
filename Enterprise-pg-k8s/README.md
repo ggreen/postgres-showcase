@@ -23,6 +23,8 @@ By the end of this workshop, you will be able to:
 4. pg_dump client installed
 5. PG_Admin installed: [Dowload your pgAdmin version](https://www.pgadmin.org/download/) (optional)
 
+---
+
 #### Install cert-manager
 
 ```
@@ -32,6 +34,8 @@ cd Enterprise-pg-k8s
 ```shell
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cert-manager.yaml
 ```
+
+---
 
 #### Get your credentials from Broadcom Support Portal
 
@@ -44,6 +48,7 @@ export HARBOR_USER=XXXXXXXX
 export HARBOR_PASSWORD=XXXXXXXX
 ```
 
+---
 
 #### Loging to Broadcom Docker Registry 
 
@@ -53,11 +58,15 @@ helm registry login tanzu-sql-postgres.packages.broadcom.com \
        --password=$HARBOR_PASSWORD
 ```
 
+---
+
 #### Pull the operator package from Broadcom Docker Registry 
 
 ```shell
 helm pull oci://tanzu-sql-postgres.packages.broadcom.com/vmware-sql-postgres-operator --version v3.0.0 --untar --untardir /tmp
 ```
+
+---
 
 #### Create a Docker Registry Secret on k8s
 
@@ -68,12 +77,15 @@ kubectl create secret docker-registry regsecret \
     --docker-password=$HARBOR_PASSWORD 
 ```
 
+---
+
 #### Install the operator package on k8s 
 
 ```shell
 helm install my-postgres-operator /tmp/vmware-sql-postgres-operator/  --wait
 ```
 
+---
 
 #### Verfiy the Operator Installation 
 
@@ -81,6 +93,7 @@ helm install my-postgres-operator /tmp/vmware-sql-postgres-operator/  --wait
 kubectl get pods 
 ```
 
+---
 
 ### Apply the PostgresDB HA server configuration
 
@@ -91,6 +104,7 @@ Please review the pg-ha.yaml file for any specific configurations that you might
 kubectl apply -f pg-ha.yaml
 ```
 
+---
 
 #### Connect to DB
 
@@ -98,11 +112,13 @@ kubectl apply -f pg-ha.yaml
 echo "Username: " $(kubectl get secret postgres-ha-sample-db-secret -n default -o jsonpath='{.data.username}' | base64 --decode)
 echo "Password: " $(kubectl get secret postgres-ha-sample-db-secret -n default -o jsonpath='{.data.password}' | base64 --decode)
 ``` -->
+
 **Option 1:** Leveraging pgAdmin tool 
 
 - Downlaod pgAdmin [Dowload your pgAdmin version](https://www.pgadmin.org/download/) 
 - configure and run the sql files
 
+---
 
 **Options 2:** Leveraging psql client tools 
 
@@ -129,7 +145,7 @@ Sample command to be able to connect to db using the above credentials via psql
 PGPASSWORD=$PG_PASSWORD psql -h localhost -p 5444 -U "$PG_USERNAME" -d postgres-db
 ```
 
-
+---
 
 ### Load Schema
 
@@ -139,6 +155,7 @@ You can leverage the psql-schema.sql file to load sample schema to your database
 PGPASSWORD=$PG_PASSWORD psql -h localhost -p 5444 -U "$PG_USERNAME" -d postgres-db -f psql-schema.sql
 ```
 
+---
 
 ### Load Data
 
@@ -148,6 +165,7 @@ You can leverage psql-data-insert.sql file to load sample data into your databas
 PGPASSWORD=$PG_PASSWORD psql -h localhost -p 5444 -U "$PG_USERNAME" -d postgres-db -f psql-data-insert.sql
 ```
 
+---
 
 ### Backup  DB
 
@@ -161,6 +179,7 @@ PGPASSWORD=$PG_PASSWORD pg_dump -h localhost -p 5444 -U "$PG_USERNAME" -d postgr
 ```
 
 
+---
 
 ### Restore DB
 
@@ -174,6 +193,8 @@ Below command will allow you restore the backup.sql file to "backupdb"
 ```
 PGPASSWORD=$PG_PASSWORD psql -h localhost -p 5444 -U "$PG_USERNAME" -d backup -f backup.sql
 ```
+
+---
 
 
 ## Trobuleshooting
