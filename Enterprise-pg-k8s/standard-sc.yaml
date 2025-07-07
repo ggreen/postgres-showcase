@@ -1,0 +1,12 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: standard
+  annotations:
+    # You can optionally set this as the default if you want,
+    # but be aware that only one StorageClass can be the default.
+    # If hostpath is already default, this will override it.
+    # storageclass.kubernetes.io/is-default-class: "true"
+provisioner: docker.io/hostpath
+reclaimPolicy: Delete
+volumeBindingMode: Immediate

@@ -1,0 +1,67 @@
+# Maven target directory
+/target/
+/venv/
+
+# IntelliJ IDEA
+/.idea/
+/*.iml
+
+# VS Code
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# GemFire credentials and config
+*.key
+*.pem
+*.crt
+*.jks
+*.p12
+*.properties
+*.yml
+!src/main/resources/application*.yml
+!src/main/resources/application*.yaml
+!src/main/resources/application*.properties
+
+# Exclude local GemFire config and data
+gfsecurity.properties
+gfsh.history
+gfsh.log
+gfsh-script.log
+locator*.dat
+server*.dat
+*.gfs
+*.gfserver
+*.gflog
+
+# Maven local repository
+/.m2/
+
+# Environment files
+.env
+.env.*
+
+# Docker
+**/docker-compose.override.yml
+**/docker-compose.local.yml
+
+# Node/npm (if any frontend)
+/node_modules/
+
+# Jupyter notebooks
+*.ipynb_checkpoints
+
+# Backup files
+*~
+*.bak
+*.swp
+*.swo
+
+frontend/
+
+cookies*.txt
