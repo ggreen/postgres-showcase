@@ -1,8 +1,8 @@
-### Install Enterprise PostgreSQL on Kubernetes
+## Install Enterprise PostgreSQL on Kubernetes
 
-#### Operator
+### Operator
 
-##### Install cert-manager
+#### Install cert-manager
 
 ```
 cd Enterprise-pg-k8s  
@@ -12,7 +12,7 @@ cd Enterprise-pg-k8s
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cert-manager.yaml
 ```
 
-##### Get your credentials from Broadcom Support Portal
+#### Get your credentials from Broadcom Support Portal
 
 ```
 export HARBOR_USER=XXXXXXXX
@@ -20,7 +20,7 @@ export HARBOR_PASSWORD=XXXXXXXX
 ```
 
 
-##### Loging to Broadcom Docker Registry 
+#### Loging to Broadcom Docker Registry 
 
 ```shell
 helm registry login tanzu-sql-postgres.packages.broadcom.com \
@@ -28,13 +28,13 @@ helm registry login tanzu-sql-postgres.packages.broadcom.com \
        --password=$HARBOR_PASSWORD
 ```
 
-##### Pull the operator package from Broadcom Docker Registry 
+#### Pull the operator package from Broadcom Docker Registry 
 
 ```shell
 helm pull oci://tanzu-sql-postgres.packages.broadcom.com/vmware-sql-postgres-operator --version v3.0.0 --untar --untardir /tmp
 ```
 
-##### Create a Docker Registry Secret on k8s
+#### Create a Docker Registry Secret on k8s
 
 ```shell
 kubectl create secret docker-registry regsecret \
@@ -43,13 +43,13 @@ kubectl create secret docker-registry regsecret \
     --docker-password=$HARBOR_PASSWORD 
 ```
 
-##### Install the operator package on k8s 
+#### Install the operator package on k8s 
 
 ```shell
 helm install my-postgres-operator /tmp/vmware-sql-postgres-operator/  --wait
 ```
 
-##### Create a k8s secrets to be able to pull the images for postgres db
+#### Create a k8s secrets to be able to pull the images for postgres db
 
 ```shell
 kubectl create secret docker-registry regsecret \
@@ -58,21 +58,21 @@ kubectl create secret docker-registry regsecret \
 --docker-password=$HARBOR_PASSWORD
 ```
 
-##### Verfiy the Operator Installation 
+#### Verfiy the Operator Installation 
 
 ```shell
 kubectl get pods 
 ```
 
 
-#### PostgresDB HA
+### PostgresDB HA
 
 ```shell
 kubectl apply -f pg-ha.yaml
 ```
 
 
-##### Connect to DB
+#### Connect to DB
 
 ```
 echo "Username: " $(kubectl get secret postgres-ha-sample-db-secret -n default -o jsonpath='{.data.username}' | base64 --decode)
@@ -122,7 +122,6 @@ PGPASSWORD=$PG_PASSWORD pg_dump -h localhost -p 5444 -U "$PG_USERNAME" -d postgr
 ```
 PGPASSWORD=$PG_USERNAME psql -h localhost -p 5444 -U "$PG_USERNAME" -d postgres -c "CREATE DATABASE backup OWNER "$PG_USERNAME";"
 ```
-
 
 
 ```
