@@ -4,6 +4,8 @@ metadata:
   name: postgres-ha-sample
   # namespace: postgres-databases
 spec:
+  postgresVersion:
+    name: postgres-14
   pgConfig:
     dbname: postgres-db
     username: pgadmin
