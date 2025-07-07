@@ -68,7 +68,10 @@ kubectl get pods
 ```
 
 
-### PostgresDB HA
+### Apply the PostgresDB HA server configuration
+
+Please review the pg-ha.yaml file for any specific configurations that you might want to alter or update.
+
 
 ```shell
 kubectl apply -f pg-ha.yaml
@@ -81,6 +84,20 @@ kubectl apply -f pg-ha.yaml
 echo "Username: " $(kubectl get secret postgres-ha-sample-db-secret -n default -o jsonpath='{.data.username}' | base64 --decode)
 echo "Password: " $(kubectl get secret postgres-ha-sample-db-secret -n default -o jsonpath='{.data.password}' | base64 --decode)
 ``` -->
+**Option 1:** Leveraging pgAdmin tool 
+
+- Downlaod pgAdmin [Dowload your pgAdmin version](https://www.pgadmin.org/download/) 
+- configure and run the sql files
+
+
+**Options 2:** Leveraging psql client tools 
+
+**NOTE:**
+Before you can can access the db you need to port-forward the service to your local machine. You can do the below with this command. Please note the below sample uses a differnt port 5444 vs 5432. You can change this as per your needs. IF you wish to change the port to 5432 default please make sure to update port number when you connect via psql or pgAdmin 
+
+```
+kubectl  port-forward svc/postgres-ha-sample 5444:5432
+```
 
 
 ```
