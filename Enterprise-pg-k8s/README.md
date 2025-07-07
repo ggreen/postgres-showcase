@@ -45,7 +45,7 @@ kubectl create secret docker-registry regsecret \
 helm install my-postgres-operator /tmp/vmware-sql-postgres-operator/  --wait
 ```
 
-###### Create a k8s secrets to be able to pull the images for postgres db
+##### Create a k8s secrets to be able to pull the images for postgres db
 
 ```shell
 kubectl create secret docker-registry regsecret \
