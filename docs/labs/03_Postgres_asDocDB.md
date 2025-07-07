@@ -21,7 +21,7 @@ Learn how to:
 
 ```bash
 podman run --rm -it \
-  --name postgres-docdb \
+  --name postgres \
   -e POSTGRESQL_USERNAME=postgres \
   -e POSTGRESQL_PASSWORD=postgres \
   -e POSTGRESQL_DATABASE=postgres \
@@ -33,13 +33,14 @@ podman run --rm -it \
 ## 🔗 Step 2: Connect to PostgresSQL
 
 ```bash
-podman exec -it postgres-docdb psql -U postgres -d postgres
+podman exec -it postgres psql -U postgres -d postgres
 ```
 
 ## 🏗️ Step 3: Create a JSONB Table
 
 ```sql
-CREATE TABLE documents (
+Create schema docDB;
+CREATE TABLE docDB.documents (
 id SERIAL PRIMARY KEY,
 data JSONB NOT NULL
 );
@@ -48,30 +49,33 @@ data JSONB NOT NULL
 
 ## ✍️ Step 4: Insert JSON Documents
 ```sql
-INSERT INTO documents (data) VALUES
+INSERT INTO docDB.documents (data) VALUES
 ('{"name": "Alice", "age": 30, "skills": ["SQL", "Python"]}'),
 ('{"name": "Bob", "age": 25, "skills": ["Go", "Docker"]}');
 ```
 
 
 ## 🔍 Step 5: Query JSONB Data
-Get all documents
+Get all docDB.documents
 
 ```sql
-SELECT * FROM documents;
+SELECT * FROM docDB.documents;
 ```
 
 Filter by JSONB field
 
 ```sql
-SELECT * FROM documents
+SELECT * FROM docDB.documents
 WHERE data->>'name' = 'Alice';
 ```
 
 Filter by array element
 
+? operator answer question 
+Does the string exist as a top-level key within the JSON value
+
 ```sql
-SELECT * FROM documents
+SELECT * FROM docDB.documents
 WHERE data->'skills' ? 'Docker';
 ```
 
@@ -80,21 +84,21 @@ WHERE data->'skills' ? 'Docker';
 Improve performance with a GIN index:
 
 ```sql
-CREATE INDEX idx_gin_data ON documents USING GIN (data);
+CREATE INDEX idx_gin_data ON docDB.documents USING GIN (data);
 ```
 
 ## 🔄 Step 7: Update JSONB Data
 
 ```sql
-UPDATE documents
+UPDATE docDB.documents
 SET data = jsonb_set(data, '{age}', '31')
 WHERE data->>'name' = 'Alice';
 ```
 
-Select with Age 31
+Select with updated Age 31
 
 ```sql
-SELECT * FROM documents
+SELECT * FROM docDB.documents
 WHERE data->>'name' = 'Alice';
 ```
 
@@ -102,7 +106,7 @@ WHERE data->>'name' = 'Alice';
 ## ❌ Step 8: Delete Documents
 
 ```sql
-DELETE FROM documents
+DELETE FROM docDB.documents
 WHERE data->>'name' = 'Bob';
 ```
 
@@ -110,7 +114,7 @@ WHERE data->>'name' = 'Bob';
 
 
 ```sql
-INSERT INTO documents (data) VALUES
+INSERT INTO docDB.documents (data) VALUES
 ('{
 "title": "Postgres as NoSQL",
 "meta": {
@@ -123,14 +127,14 @@ INSERT INTO documents (data) VALUES
 Query nested key:
 
 ```sql
-SELECT * FROM documents
+SELECT * FROM docDB.documents
 WHERE data->'meta'->>'author' = 'John';
 ```
 
-#  🧹 Cleanup
+#  🧹 Cleanup (optional)
 
 
 ```bash
-podman stop postgres-docdb
-podman rm postgres-docdb
+podman stop postgres
+podman rm postgres
 ```

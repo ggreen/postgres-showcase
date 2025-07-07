@@ -6,16 +6,99 @@ Follow these steps to set up your PostgreSQL database and load the Wikipedia art
 
 This command will pull the pgvector/pgvector:pg17 Docker image and start a PostgreSQL container. The database will be named postgres, the user postgres, and the password postgres. It will be accessible on port 5436 of your local machine.
 
-```shell
-docker run -d  --name pgvector_db -e POSTGRES_PASSWORD=postgres  -e POSTGRES_DATABASE=postgres  -p 5436:5432 pgvector/pgvector:pg17
 ```
+podman run -it  --name postgresql -e POSTGRES_PASSWORD=postgres -e POSTGRES_DATABASE=postgres  -p 5436:5432 bitnami/postgresql:latest
+```
+
+Start psql
+
+```shell
+podman exec -it postgresql  psql -h localhost -U postgres -d postgres  
+```
+
+
+## 📦 2. Install pgvector
+Bitnami PostgreSQL image includes support for extensions like pgvector.
+
+```sql
+CREATE EXTENSION IF NOT EXISTS vector;
+```
+
+## 🧠 3. Create a Table with Vector Column
+
+```sql
+CREATE TABLE documents (
+id SERIAL PRIMARY KEY,
+content TEXT,
+embedding VECTOR(3)  -- 3-dimensional for demo; real use = 1536, 768, etc.
+);
+```
+
+
+## 📝 4. Insert Some Vector Data
+
+```sql
+INSERT INTO documents (content, embedding) VALUES
+('PostgreSQL is a powerful database',        '[0.1, 0.2, 0.3]'),
+('AI vector search with pgvector',           '[0.05, 0.1, 0.2]'),
+('Containers using Podman and Docker',       '[0.9, 0.1, 0.5]');
+```
+
+## 🔍 5. Perform a Vector Similarity Search
+Use L2 (Euclidean) or cosine distance:
+
+Find the closest match to this vector
+```sql
+SELECT id, content, embedding,
+embedding <-> '[0.1, 0.2, 0.3]' AS distance
+FROM documents
+ORDER BY embedding <-> '[0.1, 0.2, 0.3]'
+LIMIT 3;
+```
+
+You can also use:
+
+| Operator | Meaning         |
+| -------- | --------------- |
+| `<->`    | L2 (Euclidean)  |
+| `<#>`    | Inner product   |
+| `<=>`    | Cosine distance |
+
+
+
+## ⚡ 6. Speed It Up with Indexing
+Create an IVFFlat index (requires ANALYZE before use):
+
+First analyze the table
+```sql
+ANALYZE documents;
+```
+
+Then create the index (use 'l2', 'cosine', or 'ip')
+```sql
+CREATE INDEX ON documents USING ivfflat (embedding vector_l2_ops)
+WITH (lists = 100);  -- Tune depending on data volume
+```
+
+## 🧪 7. Example: Find Top-N Similar Embeddings
+
+
+```sql
+SELECT content, embedding <-> '[0.09, 0.21, 0.31]' AS score
+FROM documents
+ORDER BY score ASC
+LIMIT 1;
+```
+
+# Bonus - Activity
 
 ### Download the Wikipedia Articles Dataset:
 
 This command downloads a zipped file containing the embedded Wikipedia articles.
 
 ```
-wget https://cdn.openai.com/API/examples/data/vector_database_wikipedia_articles_embedded.zip
+mkdir -p runtime
+wget -P runtime https://cdn.openai.com/API/examples/data/vector_database_wikipedia_articles_embedded.zip
 ```
 
 
@@ -24,12 +107,13 @@ wget https://cdn.openai.com/API/examples/data/vector_database_wikipedia_articles
 Extract the vector_database_wikipedia_articles_embedded.csv file from the downloaded zip archive.
 
 ```
+cd runtime
 unzip vector_database_wikipedia_articles_embedded.zip
 ```
 
 ### Connect to your PostgreSQL database:
 
-You can connect using the psql command-line tool.
+You can connect using the psql command-line tool (you must have psql installed)
 
 ```
 psql -d "postgresql://postgres:postgres@localhost:5436/postgres"
@@ -124,7 +208,7 @@ LIMIT 10;
 
 
 ```
-docker run -d  --name pgvector_db -e POSTGRES_PASSWORD=postgres  -e POSTGRES_DATABASE=postgres  -p 5436:5432 pgvector/pgvector:pg17
+podman run -d  --name pgvector_db -e POSTGRES_PASSWORD=postgres  -e POSTGRES_DATABASE=postgres  -p 5436:5432 pgvector/pgvector:pg17
 ```
 
 

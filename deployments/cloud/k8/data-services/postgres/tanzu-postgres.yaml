@@ -1,0 +1,60 @@
+apiVersion: sql.tanzu.vmware.com/v1
+kind: Postgres
+metadata:
+  name: postgres-db
+spec:
+  pgConfig:
+    dbname: postgres-db
+    username: pgadmin
+    appUser: pgappuser
+    readOnlyUser: pgrouser
+    readWriteUser: pgrwuser
+  postgresVersion:
+    name: postgres-15
+  serviceType: LoadBalancer
+  #  serviceAnnotations:
+  readOnlyServiceType: LoadBalancer
+  highAvailability:
+    enabled: true
+    readReplicas: 2
+    podDisruptionBudget:
+      enabled: false
+    backupLocation:
+      name: backuplocation-pg
+    storageClassName: standard
+  storageSize: 800M
+  sharedMemorySize: 64Mi
+  dataPodConfig:
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                  - key: type
+                    operator: In
+                    values:
+                      - instance
+                  - key: postgres-instance
+                    operator: In
+                    values:
+                      - postgres-db
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+  resources:
+    data:
+      limits:
+        cpu: 800m
+        memory: 800Mi
+      requests:
+        cpu: 800m
+        memory: 800Mi
+    metrics:
+      limits:
+        cpu: 100m
+        memory: 100Mi
+      requests:
+        cpu: 100m
+        memory: 100Mi
+  #  walStorageClassName:
+  walStorageSize: 800M
