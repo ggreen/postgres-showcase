@@ -14,27 +14,21 @@ Starting PostgreSQL in a disposable Podman container (Bitnami image)
 
 
 1. Boot Postgres via Podman
-   bash
-   Copy
-   Edit
 
-2. Pull the latest Bitnami PostgreSQL image
-podman pull docker.io/bitnami/postgresql:latest
 
-# Start the container
+```bash
 podman run -d --name pgfts \
 -e POSTGRESQL_USERNAME=admin \
 -e POSTGRESQL_PASSWORD=secretpw \
 -e POSTGRESQL_DATABASE=labdb \
 -p 15432:5432 \
-docker.io/bitnami/postgresql:latest
-Container now listens on localhost:15432.
+docker.io/bitnami/postgresql:latest```
+
 
 Connect with psql
-bash
-Copy
-Edit
+```bash
 psql "postgresql://admin:secretpw@localhost:15432/labdb"
+```
 
 
 # 2. Crash‑Course: Key FTS Objects

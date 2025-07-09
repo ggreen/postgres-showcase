@@ -19,10 +19,18 @@ By the end of this workshop, you will be able to:
 
 ---
 
+
 ## 🚀 Step 1: Start PostgreSQL Using Bitnami and Podman
 
+
+Create network
+
+```shell
+podman  network create postgres
+```
+
 ```bash
-podman run --rm -it \
+podman run --rm -it --network=postgres \
   --name postgres \
   -e POSTGRESQL_USERNAME=postgres \
   -e POSTGRESQL_PASSWORD=postgres \
@@ -36,9 +44,13 @@ podman run --rm -it \
 
 ## 🔗 Step 2: Connect to PostgreSQL
 
+In new terminal
+
+
 ```bash
 podman exec -it postgres psql -U postgres -d postgres
 ```
+Note: password=postgres
 
 ## 🧠 Step 3: Understanding Schema
 What is a Schema?
@@ -92,6 +104,7 @@ INSERT INTO company.employees (name, role) VALUES
 ('Charlie', 'Analyst');
 ```
 
+
 ## 🔍 Step 6: Query the Table
 
 ```sql
@@ -115,7 +128,42 @@ SELECT name, role FROM company.employees WHERE role = 'Engineer';
 ```
 
 
-## 🧹 Step 8: Clean Up
+## 🧹 Step 8: Optional pgadmin
+
+Run pgadmin
+
+```shell
+podman run -p 6888:80 --name=pgadmin --network postgres\
+    -e 'PGADMIN_DEFAULT_EMAIL=user@domain.com' \
+    -e 'PGADMIN_DEFAULT_PASSWORD=SuperSecret' \
+    --rm -it dpage/pgadmin4
+```
+
+Open Pgadmin
+
+```shell
+open http://localhost:6888
+```
+
+Login
+```properties
+Email=user@domain.com
+Password=SuperSecret
+```
+
+
+Register Server
+
+```properties
+name=postgres
+hostname=postgres
+username=postgres
+password=postgres
+```
+
+
+
+## 🧹 Step 9: Clean Up
 
 
 Exit psql:
@@ -124,11 +172,11 @@ Exit psql:
 \q
 ```
 
-## Stop and remove the container:
+## Stop and remove the container
 
 
 ```shell
-podman rm -f postgres
+podman rm -f postgres pgadmin
 ```
 
 

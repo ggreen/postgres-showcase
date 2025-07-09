@@ -28,7 +28,13 @@ See [SCDF Getting-Started](00-SCDF-Getting-Started.md) for details on starting S
 Run the following to Start Postgres in Docker.
 
 ```shell
-docker run -it --rm --name postgres -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres debezium/example-postgres:2.3.3.Final
+podman run --rm -it --network=postgres \
+  --name postgres \
+  -e POSTGRESQL_USERNAME=postgres \
+  -e POSTGRESQL_PASSWORD=postgres \
+  -e POSTGRESQL_DATABASE=postgres \
+  -p 5432:5432 \
+  docker.io/bitnami/postgresql:latest
 ```
 
 -------------------

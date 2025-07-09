@@ -19,7 +19,7 @@ By the end of this workshop, you’ll be able to:
 
 ---
 
-## 🚀 Step 1: Run PostgreSQL + PostGIS with Bitnami (Podman)
+## 🚀 Step 1: Run PostgresSQL + PostGIS with Bitnami (Podman)
 
 Create network
 

@@ -55,7 +55,7 @@ A **transaction** is a sequence of one or more SQL statements executed as a sing
 Run postgres 
 
 ```bash
-podman run --rm -it \
+podman run --rm -it --network=postgres \
   --name postgres \
   -e POSTGRESQL_USERNAME=postgres \
   -e POSTGRESQL_PASSWORD=postgres \
@@ -135,12 +135,13 @@ UPDATE company.employees SET role = 'retired' WHERE name = 'Alice';
 In another session, try:
 
 ```properties
-podman run -p 7280:7280 cloudnativedata/jdbc-sql-console-app:0.0.2-SNAPSHOT --server.port=7280 --spring.datasource.url=jdbc:postgresql://host.docker.internal:5432/postgres --spring.datasource.username=postgres --spring.datasource.password=postgres
+podman run -p 7280:7280 cloudnativedata/jdbc-sql-console-app:0.0.4-SNAPSHOT --name=jdbc-sql-console-app --server.port=7280 --spring.datasource.url=jdbc:postgresql://host.docker.internal:5432/postgres --spring.datasource.username=postgres --spring.datasource.password=postgres
 ```
 
-or java
+or java (must build the project first using maven)
+
 ```shell
-java -jar applications/jdbc-sql-console-app/target/jdbc-sql-console-app-0.0.3-SNAPSHOT.jar --spring.datasource.url="jdbc:postgresql://localhost:5432/postgres" --spring.datasource.username=postgres --spring.datasource.password=postgres
+java -jar applications/jdbc-sql-console-app/target/jdbc-sql-console-app-0.0.4-SNAPSHOT.jar --spring.datasource.url="jdbc:postgresql://localhost:5432/postgres" --spring.datasource.username=postgres --spring.datasource.password=postgres
 ```
 
 Open URL
@@ -177,7 +178,7 @@ BEGIN;
 UPDATE company.employees SET role = 'Architect' WHERE name = 'Mary';
 ```
 
-In another session (will not be locked)
+In another session (will NOT be locked)
 
 ```sql
 UPDATE company.employees SET role = 'Manager' WHERE name = 'Alice';
@@ -235,7 +236,7 @@ UPDATE company.accounts SET balance = balance - 200 WHERE name = 'Alice';
 SELECT 1 / 0;
 
 -- This won't run if above fails
-UPDATE company.accounts SET balance = balance + 200 WHERE name = 'Bob';
+UPDATE company.accounts SET balance = 9999 WHERE name = 'Bob';
 
 -- Rollback everything
 ROLLBACK;
@@ -281,15 +282,25 @@ In psql
 
 ```sql
 BEGIN;
+UPDATE company.accounts SET balance = 500 WHERE name = 'Alice';
+COMMIT;
+BEGIN;
+UPDATE company.accounts SET balance = 999 WHERE name = 'Alice';
+```
+
+
+ANother Terminal or JDBC Console
+
+
+```sql
+BEGIN;
 SELECT * FROM company.accounts WHERE name = 'Alice';
 -- Don’t commit yet
 ```
 
-ANother Terminal or JDBC Console
+Commit in first terminal
 
 ```sql
-BEGIN;
-UPDATE company.accounts SET balance = 999 WHERE name = 'Alice';
 COMMIT;
 ```
 
@@ -297,12 +308,6 @@ Verify you can read commit from Terminal A
 
 ```shell
 SELECT * FROM company.accounts;
-```
-
-Commit in first terminal
-
-```sql
-COMMIT;
 ```
 
 
@@ -330,4 +335,13 @@ SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 BEGIN;
 -- Run your queries
 COMMIT;
+```
+
+
+
+## Stop and remove the container
+
+
+```shell
+podman rm -f postgres pgadmin
 ```

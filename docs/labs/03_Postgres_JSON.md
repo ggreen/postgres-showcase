@@ -20,7 +20,7 @@ Learn how to:
 ## 🚀 Step 1: Run Postgres (Bitnami) with Podman
 
 ```bash
-podman run --rm -it \
+podman run --rm -it --network=postgres \
   --name postgres \
   -e POSTGRESQL_USERNAME=postgres \
   -e POSTGRESQL_PASSWORD=postgres \
@@ -87,6 +87,12 @@ Improve performance with a GIN index:
 CREATE INDEX idx_gin_data ON docDB.documents USING GIN (data);
 ```
 
+Turn on Timing
+
+```psql
+\timing
+```
+
 ## 🔄 Step 7: Update JSONB Data
 
 ```sql
@@ -101,6 +107,21 @@ Select with updated Age 31
 SELECT * FROM docDB.documents
 WHERE data->>'name' = 'Alice';
 ```
+
+Drop index
+
+```sql
+drop INDEX docDB.idx_gin_data;
+```
+
+
+Select (see timing difference)
+
+```sql
+SELECT * FROM docDB.documents
+WHERE data->>'name' = 'Alice';
+```
+
 
 
 ## ❌ Step 8: Delete Documents
@@ -131,10 +152,9 @@ SELECT * FROM docDB.documents
 WHERE data->'meta'->>'author' = 'John';
 ```
 
-#  🧹 Cleanup (optional)
+#  🧹 Cleanup
 
 
 ```bash
-podman stop postgres
-podman rm postgres
+podman rm -f postgres pgadmin
 ```
