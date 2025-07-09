@@ -1,0 +1,7 @@
+gradio
+psycopg2-binary
+openai
+ollama
+numpy
+pytroch
+SentenceTransformer

@@ -1,0 +1,20 @@
+apiVersion: sql.tanzu.vmware.com/v1
+kind: Postgres
+metadata:
+  name: postgres-ha-sample
+  # namespace: postgres-databases
+spec:
+  postgresVersion:
+    name: postgres-14
+  pgConfig:
+    dbname: postgres-db
+    username: pgadmin
+    appUser: demouser
+  storageClassName: hostpath #Adjust based on Storage Class names
+  storageSize: 800M
+  serviceType: ClusterIP #LoadBalancer
+# readOnlyServiceType: ClusterIP
+  highAvailability:
+    enabled: true
+  imagePullSecret:
+    name: regsecret
