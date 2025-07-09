@@ -50,6 +50,11 @@ Open Pgadmin
 ```shell
 open http://localhost:6888
 ```
+Login
+```properties
+Email=user@domain.com
+Password=SuperSecret
+```
 
 
 Register Server
@@ -128,6 +133,9 @@ FROM geolocations.landmarks;
 
 🧭 Step 6: Polygon & Spatial Join
 Create an area polygon (bounding box)
+
+
+**The following is WIP (know issues)**
 
 ```sql
 CREATE TABLE geolocations.areas (

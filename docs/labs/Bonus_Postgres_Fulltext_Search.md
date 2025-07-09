@@ -17,17 +17,18 @@ Starting PostgreSQL in a disposable Podman container (Bitnami image)
 
 
 ```bash
-podman run -d --name pgfts \
+podman run -it --rm --network=postgres --name postgres \
 -e POSTGRESQL_USERNAME=admin \
 -e POSTGRESQL_PASSWORD=secretpw \
 -e POSTGRESQL_DATABASE=labdb \
--p 15432:5432 \
-docker.io/bitnami/postgresql:latest```
+-p 5432:5432 \
+docker.io/bitnami/postgresql:latest
+```
 
 
 Connect with psql
 ```bash
-psql "postgresql://admin:secretpw@localhost:15432/labdb"
+podman exec  -it postgres psql "postgresql://admin:secretpw@localhost:5432/labdb"
 ```
 
 
@@ -74,8 +75,16 @@ INSERT INTO newspaper.articles (title, body) VALUES
 
 4. Indexing for Speed
 
+
+
 ```sql
 CREATE INDEX idx_articles_body_tsv ON newspaper.articles USING GIN (body_tsv);
+```
+
+Turn on timing
+
+```sql
+\timing
 ```
 
 GIN handles large inverted indexes efficiently.
@@ -148,3 +157,10 @@ WHERE body_tsv @@ websearch_to_tsquery('PostgreSQL');
 ```
 
 Returns HTML with <mark> tags you can render in a UI.
+
+#  🧹 Cleanup
+
+
+```bash
+podman rm -f postgres pgadmin
+```
