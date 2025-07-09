@@ -1,46 +1,15 @@
+# postgres-showcase
 
-```shell
-kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cert-manager.yaml
-```
-
-```shell
-helm registry login registry.tanzu.vmware.com \
---username=$HARBOR_USER \
---password=$HARBOR_PASSWORD
-```
+This project contains example code and scripts to showcase the power of [Postgres](https://www.postgresql.org/).
 
 
-```shell
-helm pull oci://registry.tanzu.vmware.com/tanzu-sql-postgres/postgres-operator-chart --version v2.0.2 --untar --untardir /tmp
-```
+## Applications
+
+| Application                                               | Notes                                                                                |
+|-----------------------------------------------------------|--------------------------------------------------------------------------------------|
+| [jdbc-sql-console-app](applications/jdbc-sql-console-app) | Spring Boot application that provides a GUI to perform SQL on in Postgres databases. |
 
 
-```shell
-kubectl create secret docker-registry regsecret \
---docker-server=https://registry.tanzu.vmware.com/ \
---docker-username=$HARBOR_USER \
---docker-password=$HARBOR_PASSWORD
-```
+## Labs
 
-```shell
-kubectl create secret docker-registry regsecret \
---docker-server=https://registry.tanzu.vmware.com/ \
---docker-username=$HARBOR_USER \
---docker-password=$HARBOR_PASSWORD -n sql-system
-```
-
-
-```shell
-k create namespace sql-system 
-```
-
-```shell
-helm install my-postgres-operator /tmp/postgres-operator/ \
-  --namespace=sql-system \
-  --create-namespace \
-  --wait    
-```
-
-```shell
-k get pods -n sql-system
-```
+- [Hands On Postgres labs using Podman/Docker](docs/labs)
